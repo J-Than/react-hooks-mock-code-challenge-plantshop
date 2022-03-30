@@ -5,13 +5,22 @@ import Search from "./Search";
 
 function PlantPage() {
 
-  const [plantList, setPlantList] = useState([])
+  const [plantList, setPlantList] = useState([]);
+  const [filteredPlantList, setFilteredPlantList] = useState([]);
+  const [searchTerms, setSearchTerms] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:6001/plants")
     .then(r => r.json())
-    .then(data => setPlantList(data))
+    .then(data => {setPlantList(data); setFilteredPlantList(data)})
   }, [])
+
+  function handleSearch(search) {
+    setSearchTerms(searchTerms => searchTerms = search)
+    setFilteredPlantList(search!=="" ?
+      plantList.filter(plant => plant.name.toLowerCase().includes(search.toLowerCase())) :
+      plantList);
+  }
 
   function handleNewPlantSubmit(newPlant) {
     fetch("http://localhost:6001/plants", {
@@ -32,8 +41,8 @@ function PlantPage() {
   return (
     <main>
       <NewPlantForm onNewPlantSubmit={handleNewPlantSubmit} />
-      <Search />
-      <PlantList plants={plantList} />
+      <Search onSearch={handleSearch} currentSearch={searchTerms} />
+      <PlantList plants={filteredPlantList} />
     </main>
   );
 }

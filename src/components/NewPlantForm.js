@@ -13,7 +13,8 @@ function NewPlantForm({ onNewPlantSubmit }) {
       [e.target.name]: e.target.value})
   }
 
-  function handleSubmit() {
+  function handleSubmit(e) {
+    e.preventDefault();
     onNewPlantSubmit(newPlant);
   }
 
